@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/tebeka/go2xunit/lib"
+	"github.com/wanlibing/go2xunit/lib"
 )
 
 const (
