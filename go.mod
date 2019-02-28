@@ -1,1 +1,1 @@
-module github.com/tebeka/go2xunit
+module github.com/wanlibing/go2xunit
