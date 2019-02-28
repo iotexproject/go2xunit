@@ -80,7 +80,8 @@ func ParseGocheck(rd io.Reader, suitePrefix string) (Suites, error) {
 				continue
 			}
 			if testName != "" {
-				return nil, fmt.Errorf("%d: start in middle of test", scanner.Line())
+				//return nil, fmt.Errorf("%d: start in middle of test", scanner.Line())
+				continue
 			}
 			suiteName = tokens[1]
 			testName = tokens[2]
@@ -94,17 +95,20 @@ func ParseGocheck(rd io.Reader, suitePrefix string) (Suites, error) {
 				continue
 			}
 			if testName == "" {
-				return nil, fmt.Errorf("%d: orphan end", scanner.Line())
+				//return nil, fmt.Errorf("%d: orphan end", scanner.Line())
+				continue
 			}
 			if (tokens[2] != suiteName) || (tokens[3] != testName) {
-				return nil, fmt.Errorf("%d: suite/name mismatch", scanner.Line())
+				//return nil, fmt.Errorf("%d: suite/name mismatch", scanner.Line())
+				continue
 			}
 			test := &Test{Name: testName}
 			test.Message = strings.Join(out, "\n")
 			test.Time = tokens[4]
 			test.Status = Token2Status(tokens[1])
 			if test.Status == UnknownStatus {
-				return nil, fmt.Errorf("%d: unknown status %s", scanner.Line(), tokens[1])
+				//return nil, fmt.Errorf("%d: unknown status %s", scanner.Line(), tokens[1])
+				continue
 			}
 
 			if suite == nil || suite.Name != suiteName {
@@ -205,6 +209,7 @@ func ParseGotest(rd io.Reader, suitePrefix string) (Suites, error) {
 
 		if isBuildFailed(line) {
 			return nil, fmt.Errorf("%d: package build failed: %s", scanner.Line(), line)
+			
 		}
 
 		if curSuite == nil {
@@ -263,17 +268,20 @@ func ParseGotest(rd io.Reader, suitePrefix string) (Suites, error) {
 						curSuite = prevSuite
 						continue
 					} else {
-						return nil, fmt.Errorf("%d: orphan end test", scanner.Line())
+						//return nil, fmt.Errorf("%d: orphan end test", scanner.Line())
+						continue
 					}
 				}
 				if tokens[2] != curTest.Name {
-					err := fmt.Errorf("%d: name mismatch (try disabling parallel mode)", scanner.Line())
-					return nil, err
+					//err := fmt.Errorf("%d: name mismatch (try disabling parallel mode)", scanner.Line())
+					//return nil, err
+					continue
 				}
 			}
 			curTest.Status = Token2Status(tokens[1])
 			if curTest.Status == UnknownStatus {
-				return nil, fmt.Errorf("%d: unknown status - %s", scanner.Line(), tokens[1])
+				//return nil, fmt.Errorf("%d: unknown status - %s", scanner.Line(), tokens[1])
+				continue
 			}
 			if Options.FailOnRace && hasDatarace(out) {
 				curTest.Status = Failed
